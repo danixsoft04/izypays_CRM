@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10243a">
+<meta name="description" content="Danixsoft IzyPays school prospect and sales CRM">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>IzyPays School CRM | Danixsoft</title>
+<style>
+:root{--navy:#10243a;--blue:#1769aa;--bg:#f4f7fb;--ink:#172638;--muted:#65758a;--line:#dce5ef;--green:#16845b;--amber:#a96800;--red:#b33b3b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(120deg,#10243a,#174e78);color:#fff;padding:20px 16px 24px}
+.wrap{max-width:1100px;margin:auto;padding:0 14px}.hero{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-size:12px;letter-spacing:.14em;font-weight:800;color:#b9d9f4}h1{font-size:24px;margin:5px 0 3px}.sub{color:#d4e5f4;font-size:13px}
+main{padding:18px 0 40px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:15px}
+.stat,.panel,.school{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px #10243a08}
+.stat{padding:12px}.stat b{display:block;font-size:23px}.stat span{font-size:11px;color:var(--muted)}
+.panel{padding:15px;margin-bottom:14px}.panel h2{font-size:17px;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}
+label{font-size:12px;font-weight:700;color:#53657a}input,select,textarea{width:100%;border:1px solid #ccd8e5;border-radius:9px;padding:11px 12px;background:#fff;color:var(--ink);font:inherit;min-width:0}textarea{min-height:120px;resize:vertical}
+button,.btn{border:0;border-radius:9px;padding:10px 13px;font:700 13px system-ui;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.primary{background:var(--blue);color:#fff}.secondary{background:#eaf1f8;color:#23415e}.whatsapp{background:#e4f7ec;color:#126b42}.sms{background:#eef2ff;color:#3e4b96}.call{background:#e8f4ff;color:#155b91}.danger{background:#fff0f0;color:#a32e2e}.small{padding:7px 9px;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.hint{font-size:11px;color:var(--muted);margin-top:8px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.toolbar input{flex:1;min-width:160px}.school-list{display:grid;gap:9px}
+.school{padding:13px}.schooltop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.school h3{margin:0;font-size:16px}.meta{font-size:12px;color:var(--muted);margin-top:3px}
+.pill{font-size:10px;font-weight:800;border-radius:99px;padding:5px 8px;white-space:nowrap}.pill.not_contacted{background:#edf1f5;color:#526274}.pill.contacted{background:#fff2d9;color:#885400}.pill.started{background:#e7f2ff;color:#175b9c}.pill.paying{background:#e1f6eb;color:#116b43}
+.empty{text-align:center;padding:25px;color:var(--muted);border:1px dashed #c8d5e2;border-radius:12px}
+.notice{background:#eaf5ff;border:1px solid #c9e2f7;padding:10px 12px;border-radius:10px;font-size:12px;color:#234b6d;margin-bottom:13px}
+.save-state{font-size:11px;color:#d9ecfb}.install{background:#fff;color:#16466d}.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}h1{font-size:21px}.schooltop{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header><div class="wrap hero">
+ <div><div class="brand">DANIXSOFT</div><h1>IzyPays School CRM</h1><div class="sub">Private-school prospecting and customer tracker</div></div>
+ <div class="actions" style="margin:0"><button id="installBtn" class="install hidden" type="button">＋ Install app</button><a class="btn secondary" href="https://danixsoft04.github.io/izypays/" target="_blank" rel="noopener">Open IzyPays ↗</a></div>
+</div></header>
+<main class="wrap">
+ <div class="notice"><strong>Data protection:</strong> Your schools are saved on this device in the browser database. Use Export CSV regularly as a backup. Installing the app does not sync data between different phones or browsers.</div>
+ <section class="stats">
+  <div class="stat"><b id="total">0</b><span>Total schools</span></div>
+  <div class="stat"><b id="notContactedCount">0</b><span>Yet to contact</span></div>
+  <div class="stat"><b id="startedCount">0</b><span>Started</span></div>
+  <div class="stat"><b id="payingCount">0</b><span>Paying</span></div>
+ </section>
+ <section class="panel">
+  <h2 id="formTitle">＋ Add a school</h2>
+  <form id="schoolForm">
+   <input type="hidden" id="editId">
+   <div class="grid">
+    <div class="field"><label for="schoolName">SCHOOL NAME *</label><input id="schoolName" required placeholder="e.g. Modern Preparatory School"></div>
+    <div class="field"><label for="adminName">ADMIN / PROPRIETOR NAME</label><input id="adminName" placeholder="Name of contact person"></div>
+    <div class="field"><label for="phone">PHONE / WHATSAPP NUMBER</label><input id="phone" type="tel" placeholder="e.g. 024 123 4567"></div>
+    <div class="field"><label for="email">EMAIL (OPTIONAL)</label><input id="email" type="email" placeholder="school@example.com"></div>
+    <div class="field"><label for="region">REGION</label><input id="region" value="Bono East"></div>
+    <div class="field"><label for="district">DISTRICT / TOWN</label><input id="district" value="Kintampo North"></div>
+    <div class="field"><label for="level">SCHOOL LEVEL</label><select id="level"><option>Primary</option><option>JHS</option><option>Primary & JHS</option><option>KG, Primary & JHS</option><option>Other / Unknown</option></select></div>
+    <div class="field"><label for="status">SALES STATUS *</label><select id="status"><option value="not_contacted">Yet to contact</option><option value="contacted">Contacted</option><option value="started">Started</option><option value="paying">Paying</option></select></div>
+    <div class="field full"><label for="notes">NOTES / NEXT STEP</label><input id="notes" placeholder="e.g. Call proprietor on Monday; requested a demo"></div>
+   </div>
+   <div class="actions"><button class="primary" type="submit" id="saveBtn">Save school</button><button class="secondary hidden" type="button" id="cancelEdit">Cancel edit</button></div>
+   <div class="hint">“Yet to contact” is the default. “Started” means the school has begun testing or using IzyPays. “Paying” means it has become a paying customer.</div>
+  </form>
+ </section>
+ <section class="panel">
+  <h2>✉ Editable Danixsoft message</h2>
+  <div class="field"><label for="messageTemplate">DEFAULT WHATSAPP / SMS MESSAGE</label><textarea id="messageTemplate"></textarea></div>
+  <div class="hint">Use {school} and {admin} in the message to insert each school's saved details. The IzyPays link is included by default. Your edits are saved on this device.</div>
+  <div class="actions"><button class="secondary" type="button" id="resetTemplate">Restore default message</button></div>
+ </section>
+ <section class="panel">
+  <h2>School contacts</h2>
+  <div class="toolbar"><input id="search" placeholder="Search school, admin, town or phone…">
+   <select id="filterStatus" style="max-width:170px"><option value="all">All statuses</option><option value="not_contacted">Yet to contact</option><option value="contacted">Contacted</option><option value="started">Started</option><option value="paying">Paying</option></select>
+   <button class="secondary" id="exportBtn" type="button">Export CSV</button><button class="secondary" id="importBtn" type="button">Import CSV</button><input type="file" id="importFile" accept=".csv,text/csv" hidden>
+  </div><div id="schoolList" class="school-list"></div>
+ </section>
+ <footer>Danixsoft · IzyPays School CRM · Local-first PWA</footer>
+</main>
+<script>
+(()=> {
+'use strict';
+const DB_NAME='DanixsoftIzyPaysCRM', STORE='schools', LEGACY_KEY='danixsoft_izypays_school_crm_v1', MSGKEY='danixsoft_izypays_message_v1';
+const DEFAULT_MESSAGE=`Good morning,
+
+My name is Daniel, representing Danixsoft, developers of IzyPays, a digital school-fee collection and payment management platform.
+
+We are introducing IzyPays to private schools in Ghana to help school administrators manage fee payments more conveniently and allow parents to make school-fee payments digitally.
+
+We would love to introduce the platform to your school and arrange a short demonstration for your administration.
+
+Would your school management be available for a brief discussion?
+
+Explore IzyPays: https://danixsoft04.github.io/izypays/
+
+Thank you.
+Danixsoft – Powered by Danixsoft`;
+const $=id=>document.getElementById(id);
+let schools=[],db=null,deferredInstallPrompt=null;
+function openDB(){return new Promise((resolve,reject)=>{if(!('indexedDB' in window)){reject(new Error('IndexedDB unavailable'));return}const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+function txDone(tx){return new Promise((resolve,reject)=>{tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)})}
+async function readAll(){const tx=db.transaction(STORE,'readonly');const req=tx.objectStore(STORE).getAll();return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)})}
+async function put(item){const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(item);await txDone(tx)}
+async function remove(id){const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);await txDone(tx)}
+async function migrateLegacy(){const old=localStorage.getItem(LEGACY_KEY);if(!old)return;try{const arr=JSON.parse(old);if(Array.isArray(arr)&&arr.length){const current=await readAll();if(!current.length){const tx=db.transaction(STORE,'readwrite');arr.forEach(s=>{if(s&&s.name){if(!s.status||s.status==='')s.status='not_contacted';tx.objectStore(STORE).put({...s,id:String(s.id||Date.now()+Math.random())})}});await txDone(tx)}}localStorage.removeItem(LEGACY_KEY)}catch(e){console.warn('Legacy migration issue',e)}}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function phoneIntl(v){let d=String(v||'').replace(/\D/g,'');if(d.startsWith('0'))d='233'+d.slice(1);return d}
+function makeMessage(s){return $('messageTemplate').value.replaceAll('{school}',s.name||'your school').replaceAll('{admin}',s.admin||'').trim()}
+function render(){const q=$('search').value.toLowerCase(),f=$('filterStatus').value;const shown=schools.filter(s=>(f==='all'||s.status===f)&&[s.name,s.admin,s.phone,s.region,s.district,s.level,s.notes].join(' ').toLowerCase().includes(q));
+$('total').textContent=schools.length;$('notContactedCount').textContent=schools.filter(s=>s.status==='not_contacted').length;$('startedCount').textContent=schools.filter(s=>s.status==='started').length;$('payingCount').textContent=schools.filter(s=>s.status==='paying').length;
+if(!shown.length){$('schoolList').innerHTML='<div class="empty">No schools found. Add your first school above.</div>';return}
+$('schoolList').innerHTML=shown.map(s=>{const st=s.status||'not_contacted',p=phoneIntl(s.phone),m=makeMessage(s),wa=p?'https://wa.me/'+p+'?text='+encodeURIComponent(m):'',sms=p?'sms:'+String(s.phone).replace(/[^\d+]/g,'')+'?body='+encodeURIComponent(m):'';
+return `<article class="school"><div class="schooltop"><div><h3>${esc(s.name)}</h3><div class="meta">${esc(s.admin||'Admin not added')} · ${esc(s.level||'Level unknown')}</div><div class="meta">${esc([s.district,s.region].filter(Boolean).join(', '))}${s.phone?' · '+esc(s.phone):''}</div>${s.email?`<div class="meta">${esc(s.email)}</div>`:''}${s.notes?`<div class="meta">Note: ${esc(s.notes)}</div>`:''}</div><span class="pill ${st}">${st==='not_contacted'?'YET TO CONTACT':st.toUpperCase()}</span></div><div class="actions">${p?`<a class="btn call small" href="tel:+${p}">☎ Call</a><a class="btn whatsapp small" href="${wa}" target="_blank" rel="noopener">WhatsApp</a><a class="btn sms small" href="${sms}">SMS</a>`:''}<select class="small statusChange" data-id="${esc(s.id)}" aria-label="Change status" style="width:auto"><option value="not_contacted" ${st==='not_contacted'?'selected':''}>Yet to contact</option><option value="contacted" ${st==='contacted'?'selected':''}>Contacted</option><option value="started" ${st==='started'?'selected':''}>Started</option><option value="paying" ${st==='paying'?'selected':''}>Paying</option></select><button class="secondary small edit" data-id="${esc(s.id)}">Edit</button><button class="danger small delete" data-id="${esc(s.id)}">Delete</button></div></article>`}).join('')}
+function resetForm(){$('schoolForm').reset();$('editId').value='';$('region').value='Bono East';$('district').value='Kintampo North';$('status').value='not_contacted';$('formTitle').textContent='＋ Add a school';$('saveBtn').textContent='Save school';$('cancelEdit').classList.add('hidden')}
+$('schoolForm').addEventListener('submit',async e=>{e.preventDefault();const id=$('editId').value||String(Date.now())+'-'+Math.random().toString(36).slice(2);const old=schools.find(s=>s.id===id);const item={id,name:$('schoolName').value.trim(),admin:$('adminName').value.trim(),phone:$('phone').value.trim(),email:$('email').value.trim(),region:$('region').value.trim(),district:$('district').value.trim(),level:$('level').value,status:$('status').value,notes:$('notes').value.trim(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};if(!item.name)return;await put(item);await refresh();resetForm()});
+$('cancelEdit').onclick=resetForm;
+$('schoolList').addEventListener('click',async e=>{const id=e.target.dataset.id;if(!id)return;const s=schools.find(x=>x.id===id);if(!s)return;if(e.target.classList.contains('edit')){$('editId').value=s.id;$('schoolName').value=s.name;$('adminName').value=s.admin||'';$('phone').value=s.phone||'';$('email').value=s.email||'';$('region').value=s.region||'';$('district').value=s.district||'';$('level').value=s.level||'Other / Unknown';$('status').value=s.status||'not_contacted';$('notes').value=s.notes||'';$('formTitle').textContent='Edit school';$('saveBtn').textContent='Update school';$('cancelEdit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}else if(e.target.classList.contains('delete')&&confirm('Delete '+s.name+' from this CRM?')){await remove(id);await refresh()}});
+$('schoolList').addEventListener('change',async e=>{if(e.target.classList.contains('statusChange')){const s=schools.find(x=>x.id===e.target.dataset.id);if(s){await put({...s,status:e.target.value,updatedAt:new Date().toISOString()});await refresh()}}});
+async function refresh(){schools=await readAll();schools.sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));render()}
+$('search').oninput=render;$('filterStatus').onchange=render;
+$('messageTemplate').value=localStorage.getItem(MSGKEY)||DEFAULT_MESSAGE;$('messageTemplate').oninput=()=>localStorage.setItem(MSGKEY,$('messageTemplate').value);
+$('resetTemplate').onclick=()=>{if(confirm('Restore the original Danixsoft message?')){$('messageTemplate').value=DEFAULT_MESSAGE;localStorage.setItem(MSGKEY,DEFAULT_MESSAGE)}};
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+$('exportBtn').onclick=()=>{const cols=['name','admin','phone','email','region','district','level','status','notes','createdAt','updatedAt'];const csv=[cols.join(','),...schools.map(s=>cols.map(c=>csvCell(s[c])).join(','))].join('\r\n');const a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.href=url;a.download='izypays-school-crm-backup.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+function parseCSVLine(line){let out=[],v='',quoted=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&line[i+1]==='"'){v+='"';i++}else if(c==='"')quoted=!quoted;else if(c===','&&!quoted){out.push(v);v=''}else v+=c}out.push(v);return out}
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;const raw=await file.text(),lines=raw.split(/\r?\n/).filter(Boolean);if(lines.length<2){alert('CSV has no school records.');return}const headers=parseCSVLine(lines[0]).map(x=>x.trim().toLowerCase());let count=0;for(const line of lines.slice(1)){const vals=parseCSVLine(line),o={};headers.forEach((h,i)=>o[h]=vals[i]||'');if(!o.name)continue;await put({id:String(Date.now())+'-'+Math.random().toString(36).slice(2),name:o.name,admin:o.admin||'',phone:o.phone||'',email:o.email||'',region:o.region||'Bono East',district:o.district||'Kintampo North',level:o.level||'Other / Unknown',status:['not_contacted','contacted','started','paying'].includes(o.status)?o.status:'not_contacted',notes:o.notes||'',createdAt:o.createdat||new Date().toISOString(),updatedAt:new Date().toISOString()});count++}await refresh();alert(count+' school record(s) imported.');e.target.value=''};
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('installBtn').classList.remove('hidden')});
+$('installBtn').addEventListener('click',async()=>{if(!deferredInstallPrompt){alert('If the install prompt is not available, open your browser menu and choose Install app or Add to Home screen.');return}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('installBtn').classList.add('hidden')});
+if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err)))}
+(async()=>{try{db=await openDB();await migrateLegacy();await refresh()}catch(err){console.error(err);$('schoolList').innerHTML='<div class="empty">This browser could not open its local database. Please use an updated Chrome browser and do not use private/incognito mode.</div>'}})();
+})();
+</script>
+</body></html>
