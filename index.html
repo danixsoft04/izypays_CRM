@@ -37,7 +37,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
 <body>
 <header><div class="wrap hero">
  <div><div class="brand">DANIXSOFT</div><h1>IzyPays School CRM</h1><div class="sub">Private-school prospecting and customer tracker</div></div>
- <div class="actions" style="margin:0"><button id="installBtn" class="install " type="button">＋ Install app</button><a class="btn secondary" href="https://danixsoft04.github.io/izypays/" target="_blank" rel="noopener">Open IzyPays ↗</a></div>
+ <div class="actions" style="margin:0"><button id="installBtn" class="install hidden" type="button">＋ Install app</button><a class="btn secondary" href="https://danixsoft04.github.io/izypays/" target="_blank" rel="noopener">Open IzyPays ↗</a></div>
 </div></header>
 <main class="wrap">
  <div class="notice"><strong>Data protection:</strong> Your schools are saved on this device in the browser database. Use Export CSV regularly as a backup. Installing the app does not sync data between different phones or browsers.</div>
@@ -129,10 +129,53 @@ $('exportBtn').onclick=()=>{const cols=['name','admin','phone','email','region',
 function parseCSVLine(line){let out=[],v='',quoted=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&line[i+1]==='"'){v+='"';i++}else if(c==='"')quoted=!quoted;else if(c===','&&!quoted){out.push(v);v=''}else v+=c}out.push(v);return out}
 $('importBtn').onclick=()=>$('importFile').click();
 $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;const raw=await file.text(),lines=raw.split(/\r?\n/).filter(Boolean);if(lines.length<2){alert('CSV has no school records.');return}const headers=parseCSVLine(lines[0]).map(x=>x.trim().toLowerCase());let count=0;for(const line of lines.slice(1)){const vals=parseCSVLine(line),o={};headers.forEach((h,i)=>o[h]=vals[i]||'');if(!o.name)continue;await put({id:String(Date.now())+'-'+Math.random().toString(36).slice(2),name:o.name,admin:o.admin||'',phone:o.phone||'',email:o.email||'',region:o.region||'Bono East',district:o.district||'Kintampo North',level:o.level||'Other / Unknown',status:['not_contacted','contacted','started','paying'].includes(o.status)?o.status:'not_contacted',notes:o.notes||'',createdAt:o.createdat||new Date().toISOString(),updatedAt:new Date().toISOString()});count++}await refresh();alert(count+' school record(s) imported.');e.target.value=''};
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;$('installBtn').classList.remove('hidden')});
-$('installBtn').addEventListener('click',async()=>{if(!deferredInstallPrompt){alert('If the install prompt is not available, open your browser menu and choose Install app or Add to Home screen.');return}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('installBtn').classList.add('hidden')});
-if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service worker registration failed',err)))}
-(async()=>{try{db=await openDB();await migrateLegacy();await refresh()}catch(err){console.error(err);$('schoolList').innerHTML='<div class="empty">This browser could not open its local database. Please use an updated Chrome browser and do not use private/incognito mode.</div>'}})();
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    $('installBtn').classList.remove('hidden');
+});
+
+$('installBtn').addEventListener('click', async () => {
+    if (!deferredInstallPrompt) {
+        console.warn('The browser has not provided an installation prompt yet.');
+        return;
+    }
+
+    const installEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+
+    installEvent.prompt();
+
+    const choice = await installEvent.userChoice;
+
+    if (choice.outcome === 'accepted') {
+        $('installBtn').classList.add('hidden');
+    }
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    $('installBtn').classList.add('hidden');
+});
+
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .catch(err => console.warn('Service worker registration failed', err));
+    });
+}
+
+(async () => {
+    try {
+        db = await openDB();
+        await migrateLegacy();
+        await refresh();
+    } catch (err) {
+        console.error(err);
+        $('schoolList').innerHTML =
+            '<div class="empty">This browser could not open its local database. Please use an updated Chrome browser and do not use private/incognito mode.</div>';
+    }
+})();
 })();
 </script>
 </body></html>
